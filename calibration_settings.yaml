@@ -1,0 +1,11 @@
+camera0: 0                           # Camera index
+#camera1: 1                          # Placeholder for future stereo calibration with dual cameras
+frame_width: 1280                    # Frame width
+frame_height: 720                    # Frame height
+mono_calibration_frames: 10          # Number of frames to capture for calibration
+#stereo_calibration_frames: 10       # Placeholder for future stereo calibration with dual cameras
+view_resize: 1                       # Resize factor for display
+checkerboard_box_size_scale : 0.0319 # m side length for each square
+checkerboard_rows: 4                 # Number of Checkerboard rows
+checkerboard_columns: 7              # Number of Checkerboard columns
+cooldown: 100                        # Ticks to wait before next frame
