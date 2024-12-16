@@ -9,27 +9,6 @@ import argparse
 from threading import Thread
 from utils import ARUCO_DICT, draw_orientation
 
-class VideoStream:
-    """Class to handle threaded video stream."""
-    def __init__(self, src=0):
-        self.capture = cv2.VideoCapture(src)
-        self.ret, self.frame = self.capture.read()
-        self.running = True
-        self.thread = Thread(target=self.update, daemon=True)
-        self.thread.start()
-
-    def update(self):
-        while self.running:
-            self.ret, self.frame = self.capture.read()
-
-    def read(self):
-        return self.ret, self.frame
-
-    def stop(self):
-        self.running = False
-        self.thread.join()
-        self.capture.release()
-
 def pose_estimation(frame, arucoDict, arucoParams, matrix_coeff, distortion_coeff):
     """
     frame - Frame from the video stream
@@ -76,6 +55,7 @@ if __name__ == '__main__':
     ap.add_argument("-k", "--K_Matrix", type=str, default='calibration_matrix.npy', help="Path to calibration matrix (numpy file)")
     ap.add_argument("-d", "--D_Coeff", type=str, default='distortion_coefficients.npy', help="Path to distortion coefficients (numpy file)")
     ap.add_argument("-t", "--type", type=str, default="DICT_5X5_100", help="Type of ArUCo tag to detect")
+    ap.add_argument("-v", "--hide_video", action='store_false', help="Enable/disable video output")
     args = vars(ap.parse_args())
 
     aruco_dict_type = ARUCO_DICT[args["type"]]
@@ -86,20 +66,25 @@ if __name__ == '__main__':
     arucoParams = cv2.aruco.DetectorParameters_create()
     k = np.load(args["K_Matrix"])
     d = np.load(args["D_Coeff"])
+    show_video = args["hide_video"]
 
-    # Start the video stream
-    video_stream = VideoStream(0)
-    while True:
-        ret, frame = video_stream.read()
-        if not ret:
-            break
-
-        output_frame = pose_estimation(frame, arucoDict, arucoParams, k, d)
-        cv2.imshow('Pose Estimation', frame)
-
-        key = cv2.waitKey(1) & 0xFF
-        if key == ord('q'):
-            break
-
-    video_stream.stop()
-    cv2.destroyAllWindows()
+    try:
+        # Start the video stream
+        cap = cv2.VideoCapture(0)
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+    
+            output_frame = pose_estimation(frame, arucoDict, arucoParams, k, d)
+            if show_video:
+                cv2.imshow('Pose Estimation', frame)
+    
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord('q'):
+                    break
+    except KeyboardInterrupt:
+        print("Keyboard interrupt")
+    finally:
+        cap.release()
+        cv2.destroyAllWindows()
