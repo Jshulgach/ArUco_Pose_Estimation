@@ -50,7 +50,7 @@ You can find more details on parameters for each script using `python my-script-
     ```
    
 3. **Pose Estimation**  
-    Run `3_main.py` to begin running the pose estimation for each ArUCo marker detected. This is done in real-time for each frame obtained from the webcam feed.  
+    Run `3_main.py` to begin running the pose estimation for each ArUCo marker detected. This is done in real-time for each frame obtained from the webcam feed. FYI, you can [generate your own](https://chev.me/arucogen/).
     ```bash
     python 3_main.py  
     ```
