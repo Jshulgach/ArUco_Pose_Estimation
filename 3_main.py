@@ -30,19 +30,20 @@ class VideoStream:
         self.thread.join()
         self.capture.release()
 
-def pose_estimation(frame, detector, matrix_coeff, distortion_coeff):
-    '''
+def pose_estimation(frame, arucoDict, arucoParams, matrix_coeff, distortion_coeff):
+    """
     frame - Frame from the video stream
-    detector - ArUCo detector object
+    arucoDict - ArUCo dictionary to use for detection
+    arucoParams - Parameters for the ArUCo detection
     matrix_coefficients - Intrinsic matrix of the calibrated camera
     distortion_coefficients - Distortion coefficients associated with your camera
 
     return:-
     frame - The frame with the axis drawn on it
-    '''
+    """
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    corners, ids, rejected = detector.detectMarkers(gray)
+    (corners, ids, rejected) = cv2.aruco.detectMarkers(gray, arucoDict, parameters=arucoParams)
     if ids is not None:
         for i in range(len(ids)):
             # Estimate pose for each marker
@@ -81,9 +82,8 @@ if __name__ == '__main__':
     if not aruco_dict_type:
         raise ValueError("Invalid ArUCo tag type. Please refer to the documentation for valid types.")
 
-    arucoDict = cv2.aruco.getPredefinedDictionary(aruco_dict_type)
-    arucoParams = cv2.aruco.DetectorParameters()
-    detector = cv2.aruco.ArucoDetector(arucoDict, arucoParams)
+    arucoDict = cv2.aruco.Dictionary_get(aruco_dict_type)
+    arucoParams = cv2.aruco.DetectorParameters_create()
     k = np.load(args["K_Matrix"])
     d = np.load(args["D_Coeff"])
 
@@ -94,7 +94,7 @@ if __name__ == '__main__':
         if not ret:
             break
 
-        output_frame = pose_estimation(frame, detector, k, d)
+        output_frame = pose_estimation(frame, arucoDict, arucoParams, k, d)
         cv2.imshow('Pose Estimation', frame)
 
         key = cv2.waitKey(1) & 0xFF
