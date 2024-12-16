@@ -10,18 +10,26 @@ This repository contains the bare minimum code for simple pose estimation using 
 - Numpy
 
 ## Installation
-1. It's best to install dependencies in a virtual environment. Using either Anaconda or Python venv, prepare your environment:
-    ```bash
-    conda create -n aruco python=3.10
-    conda activate aruco
-    ```
-2. Download the repository and install the dependencies:
+
+1. Download the repository:
     ```bash
     git clone https://github.com/Jshulgach/ArUco_Pose_Estimation.git
     cd ArUco_Pose_Estimation
+    ```
+2. Install dependencies according to your OS:
+    ### Windows
+    It's best to install dependencies in a virtual environment. Using either Anaconda or Python venv, prepare your environment:
+    ```bash
+    python -m venv aruco python=3.10
+    call aruco\Scripts\activate
     pip install -r requirements.txt
     ```
-   
+    ### Linux
+    Install using the `apt install` command:
+    ```bash
+    sudo apt install python3-opencv python3-yaml
+    ```
+
 ## Usage
 
 ### Checkerboard
@@ -50,7 +58,7 @@ You can find more details on parameters for each script using `python my-script-
     ```
    
 3. **Pose Estimation**  
-    Run `3_main.py` to begin running the pose estimation for each ArUCo marker detected. This is done in real-time for each frame obtained from the webcam feed. FYI, you can [generate your own](https://chev.me/arucogen/).
+    Run `3_main.py` to begin running the pose estimation for each ArUCo marker detected. This is done in real-time for each frame obtained from the webcam feed.  
     ```bash
     python 3_main.py  
     ```
