@@ -1,3 +1,4 @@
+camera_id: 'camera0'                 # Camera ID
 camera0: 0                           # Camera index
 #camera1: 1                          # Placeholder for future stereo calibration with dual cameras
 frame_width: 1280                    # Frame width
@@ -6,6 +7,7 @@ mono_calibration_frames: 10          # Number of frames to capture for calibrati
 #stereo_calibration_frames: 10       # Placeholder for future stereo calibration with dual cameras
 view_resize: 1                       # Resize factor for display
 checkerboard_box_size_scale : 0.0319 # m side length for each square
-checkerboard_rows: 4                 # Number of Checkerboard rows
-checkerboard_columns: 7              # Number of Checkerboard columns
+checkerboard_row_vertices: 5         # Number of Checkerboard row intersections (rows-1)
+checkerboard_column_vertices: 7      # Number of Checkerboard column intersections (columns-1)
 cooldown: 100                        # Ticks to wait before next frame
+img_dir: 'frames'                    # Directory where captured frames are located

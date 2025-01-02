@@ -56,12 +56,22 @@ You can find more details on parameters for each script using `python my-script-
     ```bash
     python 2_calibrate.py  
     ```
+    * Note: If you're connected to another device via ssh (like a raspberry pi) and need to transfer the `.npy` files, you can copy them to your local WSL environment with the command:
+	    ```bash
+	    scp myusername@192.168.1.164:/home/myusername/github/ArUco_Pose_Estimation/distortion_coefficients.npy /home/myusername
+		```
+        For copying to your host windows maching:
+	    ```bash
+	    scp myusername@192.168.1.164:/home/myusername/github/ArUco_Pose_Estimation/distortion_coefficients.npy /mnt/c/Users/WindowsUserName
+		```    	
    
 3. **Pose Estimation**  
     Run `3_main.py` to begin running the pose estimation for each ArUCo marker detected. This is done in real-time for each frame obtained from the webcam feed.  
     ```bash
     python 3_main.py  
     ```
+   
+
    
 Feel free to reach out to me in case of any issues.  
 If you find this repo useful in any way please do star ⭐️ it so that others can reap it's benefits as well.

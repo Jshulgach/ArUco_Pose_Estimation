@@ -1,10 +1,10 @@
 import argparse
-from utils import save_frames_single_camera
+from utils import save_frames_single_camera, parse_calibration_settings_file
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("-d", "--img_dir", type=str, default='frames', help="Path to folder containing checkerboard images for calibration")
-    ap.add_argument("-y", "--yaml_dir", type=str, default='calibration_settings.yaml', help="Path to folder containing calibration settings")
-    ap.add_argument("-c", "--camera_id", type=str, default='camera0', help="Camera ID")
+    ap.add_argument("--yaml_dir", type=str, default='calibration_settings.yaml', help="Path to folder containing calibration settings")
     args = vars(ap.parse_args())
-    save_frames_single_camera(args["yaml_dir"], args["img_dir"], args["camera_id"])
+    
+    calib = parse_calibration_settings_file(args["yaml_dir"])
+    save_frames_single_camera(args["yaml_dir"], calib["img_dir"], calib["camera_id"])

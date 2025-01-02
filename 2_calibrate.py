@@ -7,6 +7,7 @@ import numpy as np
 import cv2
 import os
 import argparse
+from utils import parse_calibration_settings_file
 
 def calibrate(dirpath, square_size, width, height, visualize=False):
     """ Apply camera calibration operation for images in the given directory path. """
@@ -22,7 +23,15 @@ def calibrate(dirpath, square_size, width, height, visualize=False):
     objpoints = []  # 3d point in real world space
     imgpoints = []  # 2d points in image plane.
 
-    images = [os.path.join(dirpath, f) for f in os.listdir(dirpath) if f.endswith('.png', '.jpg')]
+    if os.path.isdir(dirpath):
+        print(f"{len(os.listdir(dirpath))} files found in '{dirpath}': ")
+        for f in os.listdir(dirpath):
+            print(f)
+    else:
+        print("Error: directory is not a valid path")
+        return None
+
+    images = [os.path.join(dirpath, f) for f in os.listdir(dirpath)]
 
     for fname in images:
         img = cv2.imread(fname)
@@ -49,15 +58,22 @@ def calibrate(dirpath, square_size, width, height, visualize=False):
 
 
 if __name__ == '__main__':
+    # Initialize arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-d", "--img_dir", type=str, default='frames', help="Path to folder containing checkerboard images for calibration")
-    ap.add_argument("-s", "--square_size", type=float, default=3.19, help="Length of one edge (in metres)")
-    ap.add_argument("-w", "--width", type=int, default=7, help="Width of checkerboard (default=7)")
-    ap.add_argument("-h", "--height", type=int, default=4, help="Height of checkerboard (default=4)")
-    ap.add_argument("-v", "--visualize", type=str, default="True", help="To visualize each checkerboard image")
+    ap.add_argument("--yaml_dir", type=str, default='frames', help="Path to folder containing checkerboard images for calibration")
+    ap.add_argument("--visualize", type=str, action='store_true', help="To visualize each checkerboard image")
     args = vars(ap.parse_args())
+    
+    # Get settings
+    calib = parse_calibration_settings_file(args["yaml_dir"])
 
-    ret, mtx, dist, rvecs, tvecs = calibrate(args["img_dir"], args["square_size"], args["width"], args["height"], args["visualize"])
+    ret, mtx, dist, rvecs, tvecs = calibrate(
+        calib["img_dir"], 
+        calib['checkerboard_box_size_scale'],
+        calib['checkerboard_column_vertices'],
+        calib['checkerboard_row_vertices'], 
+        args["visualize"]
+        )
 
     np.save("calibration_matrix", mtx)
     np.save("distortion_coefficients", dist)
