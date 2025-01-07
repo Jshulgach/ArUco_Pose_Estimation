@@ -3,4 +3,6 @@
 __pycache__/
 frames/
 *.npy
+*.npz
+*.yaml
 aruco/
