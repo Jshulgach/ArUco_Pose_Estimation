@@ -13,8 +13,8 @@ n_frames: 10                         # Number of frames to capture
 
 # Checkerboard settings
 checkerboard_box_size_scale : 0.0319 # m side length for each square
-checkerboard_row_vertices: 5         # Number of Checkerboard row intersections (rows-1)
+checkerboard_row_vertices: 4         # Number of Checkerboard row intersections (rows-1)
 checkerboard_column_vertices: 7      # Number of Checkerboard column intersections (columns-1)
 
 # ArUCo marker parameters
-aruco_size: 0.04                     # Size of the aruco marker in meters
+aruco_size: 0.015                     # Size of the aruco marker in meters

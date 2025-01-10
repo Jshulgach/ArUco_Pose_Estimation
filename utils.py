@@ -31,45 +31,6 @@ ARUCO_DICT = {
     "DICT_APRILTAG_36h11": cv2.aruco.DICT_APRILTAG_36h11
 }
 
-class PoseFilter:
-    """
-    A filter to smooth pose estimation using a simple moving average or exponential smoothing.
-    """
-    def __init__(self, window_size=10, alpha=0.3):
-        """
-        Initialize the PoseFilter.
-        :param window_size: Number of previous values to use for moving average.
-        :param alpha: Smoothing factor for exponential moving average (0 < alpha <= 1).
-        """
-        self.window_size = window_size
-        self.alpha = alpha
-        self.rvecs = deque(maxlen=window_size)
-        self.tvecs = deque(maxlen=window_size)
-        self.smoothed_rvec = None
-        self.smoothed_tvec = None
-
-    def update(self, rvec, tvec):
-        """
-        Update the filter with new pose data.
-        :param rvec: Current rotation vector (3x1).
-        :param tvec: Current translation vector (3x1).
-        :return: Smoothed rvec and tvec.
-        """
-        # Add to history
-        self.rvecs.append(rvec.flatten())
-        self.tvecs.append(tvec.flatten())
-
-        # Compute moving average
-        self.smoothed_rvec = np.mean(self.rvecs, axis=0)
-        self.smoothed_tvec = np.mean(self.tvecs, axis=0)
-
-        # Apply exponential smoothing
-        if len(self.rvecs) > 1:
-            self.smoothed_rvec = self.alpha * self.rvecs[-1] + (1 - self.alpha) * self.smoothed_rvec
-            self.smoothed_tvec = self.alpha * self.tvecs[-1] + (1 - self.alpha) * self.smoothed_tvec
-
-        return self.smoothed_rvec.reshape(3, 1), self.smoothed_tvec.reshape(3, 1)
-
 def parse_config_file(filename):
     """ Load calibration settings from YAML file"""
     if not os.path.exists(filename):
