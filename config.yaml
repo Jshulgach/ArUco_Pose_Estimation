@@ -1,5 +1,5 @@
 # Camera settings
-camera0: 0                           # Camera index for first camera
+camera0: http://192.168.1.185:81/stream                      # Camera index for first camera
 camera1: 1                           # Camera index for second camera, stereo vision
 #stereocamera_id: 0                  # Placeholder for future stereo calibration
 frame_width: 1920                    # Frame width
