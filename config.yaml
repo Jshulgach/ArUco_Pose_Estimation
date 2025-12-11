@@ -1,5 +1,5 @@
 # Camera settings
-camera0: http://192.168.1.185:81/stream                      # Camera index for first camera
+camera0: assets/WIN_20250404_11_11_34_Pro.mp4 #0 #http://192.168.1.185:81/stream                      # Camera index for first camera
 camera1: 1                           # Camera index for second camera, stereo vision
 #stereocamera_id: 0                  # Placeholder for future stereo calibration
 frame_width: 1920                    # Frame width
@@ -13,7 +13,7 @@ n_frames: 10                         # Number of frames to capture
 
 # Checkerboard settings
 checkerboard_box_size_scale : 0.0319 # m side length for each square
-checkerboard_row_vertices: 4         # Number of Checkerboard row intersections (rows-1)
+checkerboard_row_vertices: 5         # Number of Checkerboard row intersections (rows-1)
 checkerboard_column_vertices: 7      # Number of Checkerboard column intersections (columns-1)
 
 # ArUCo marker parameters

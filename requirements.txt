@@ -2,3 +2,4 @@ numpy==1.26.0
 opencv-python==4.6.0.66
 opencv-contrib-python==4.6.0.66
 pyyaml
+packaging

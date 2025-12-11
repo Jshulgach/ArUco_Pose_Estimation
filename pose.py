@@ -28,6 +28,7 @@ if __name__ == '__main__':
     parser.add_argument("--d_coeff", type=str, default='camera_distortion.npy', help="Path to distortion coefficients (numpy file)")
     parser.add_argument("--stereo_calib", type=str, default='stereo_calib.npz', help="Path to stereo calibration file")
     parser.add_argument("--aruco_type", type=str, default="DICT_5X5_100", help="Type of ArUCo tag to detect")
+    parser.add_argument("--aruco_size", type=float, default=0.01, help="Size of the ArUCo marker in meters (default: 0.01m)")
     parser.add_argument("--visualize", type=bool, default=True, help="Enable/disable video output")
     args = parser.parse_args()
     calib = utils.parse_config_file(args.config_path)
@@ -44,7 +45,7 @@ if __name__ == '__main__':
         cap1 = cv2.VideoCapture(camera1_id)
         stereo = np.load(args.stereo_calib)
     try:
-        print("Running {i} pose estimation. Press 'q' to quit...".format(i="stereo/dual camera" if args.dual_cameras else "single camera"))
+        print("Running pose estimation. Press 'q' to quit...".format(i="stereo/dual camera" if args.dual_cameras else "single camera"))
         while True:
 
             ret0, frame0 = cap0.read()
@@ -53,9 +54,9 @@ if __name__ == '__main__':
 
             if args.rotate_camera:
                 frame0 = cv2.rotate(frame0, cv2.ROTATE_90_CLOCKWISE)
-                
+
             if not args.dual_cameras:
-                pose_image = utils.pose_estimation_single_camera(frame0, args.aruco_type, calib, k, d)
+                pose_image, _ = utils.pose_estimation_single_camera(frame0, args.aruco_type, args.aruco_size, k, d)
             else:
                 ret1, frame1 = cap1.read()
                 if not ret1:

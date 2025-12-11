@@ -129,7 +129,7 @@ def calibrate_single_camera(calib, visualize=False):
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
     return ret, mtx, dist
 
-def pose_estimation_single_camera(frame, aruco_type, calib, matrix_coeff, distortion_coeff):
+def pose_estimation_single_camera(frame, aruco_type, aruco_size, matrix_coeff, distortion_coeff, show_text=False):
     """
     frame - Frame from the video stream
     arucoDict - ArUCo dictionary to use for detection
@@ -139,6 +139,7 @@ def pose_estimation_single_camera(frame, aruco_type, calib, matrix_coeff, distor
 
     return:-
     frame - The frame with the axis drawn on it
+    markers - Marker rotation and translation vectors
     """
     aruco_dict_type = ARUCO_DICT[aruco_type]
     if not aruco_dict_type:
@@ -162,31 +163,43 @@ def pose_estimation_single_camera(frame, aruco_type, calib, matrix_coeff, distor
     else:
         corners, ids, _ = cv2.aruco.detectMarkers(gray, arucoDict, parameters=arucoParams)
 
+    markers = {'pose':[], 'id': [], 'corners': []}  # Store marker poses and ids
     if ids is not None:
         for i in range(len(ids)):
             # Estimate pose for each marker
-            rvec, tvec, _ = cv2.aruco.estimatePoseSingleMarkers(corners[i], calib['aruco_size'], matrix_coeff, distortion_coeff)
+            rvec, tvec, _ = cv2.aruco.estimatePoseSingleMarkers(corners[i], aruco_size, matrix_coeff, distortion_coeff)
             rot_mat = cv2.Rodrigues(rvec)[0]
+            markers['pose'].append([rvec,tvec])
+            markers['id'].append(ids[i][0])  # Store the marker ID
+            markers['corners'].append(corners[i])  # Store the corners for drawing
 
             # Draw a square around the markers
             cv2.aruco.drawDetectedMarkers(frame, corners)
 
-            # Draw the reference vectors and the arc between them
-            #frame = draw_orientation(frame, matrix_coeff, distortion_coeff, rot_mat, tvec, axis_length=0.05)
-            cv2.drawFrameAxes(frame, matrix_coeff, distortion_coeff, rvec, tvec, 0.05, thickness=2)
+            # Draw the id of the marker on the frame
+            cv2.putText(frame, f"ID: {ids[i][0]}",
+                        (int(corners[i][0][0][0]), int(corners[i][0][0][1] - 10)),  # Position above the marker
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2, cv2.LINE_AA
+                        )
 
-            # Display the euler angles on the frame
-            angles = cv2.RQDecomp3x3(rot_mat)[0]
-            cv2.putText(frame, f"Pitch: {angles[0]:.3f} deg", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-            cv2.putText(frame, f"Roll: {angles[1]:.3f} deg", (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-            cv2.putText(frame, f"Yaw: {angles[2]:.3f} deg", (10, 180), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+            if show_text:
 
-            # write the xyz coordinates on the frame
-            cv2.putText(frame, f"X: {tvec[0][0][0]:.3f} m", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-            cv2.putText(frame, f"Y: {tvec[0][0][1]:.3f} m", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-            cv2.putText(frame, f"Z: {tvec[0][0][2]:.3f} m", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                # Draw the reference vectors and the arc between them
+                #frame = draw_orientation(frame, matrix_coeff, distortion_coeff, rot_mat, tvec, axis_length=0.05)
+                cv2.drawFrameAxes(frame, matrix_coeff, distortion_coeff, rvec, tvec, 0.05, thickness=2)
 
-    return frame
+                # Display the euler angles on the frame
+                angles = cv2.RQDecomp3x3(rot_mat)[0]
+                cv2.putText(frame, f"Pitch: {angles[0]:.3f} deg", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                cv2.putText(frame, f"Roll: {angles[1]:.3f} deg", (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                cv2.putText(frame, f"Yaw: {angles[2]:.3f} deg", (10, 180), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+
+                # write the xyz coordinates on the frame
+                cv2.putText(frame, f"X: {tvec[0][0][0]:.3f} m", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                cv2.putText(frame, f"Y: {tvec[0][0][1]:.3f} m", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                cv2.putText(frame, f"Z: {tvec[0][0][2]:.3f} m", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+
+    return frame, markers
 
 def save_frames_dual_cameras(calib, visualize=False):
     """Capture frames for calibration using a dual camera setup"""
