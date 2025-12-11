@@ -1,4 +1,4 @@
-# ArUco Pose Estimation Toolkit v2.0
+# ArUco Pose Estimation Toolkit v0.2.0
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![OpenCV](https://img.shields.io/badge/opencv-4.6+-green.svg)

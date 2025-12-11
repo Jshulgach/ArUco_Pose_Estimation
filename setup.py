@@ -7,7 +7,7 @@ long_description = readme_file.read_text() if readme_file.exists() else ""
 
 setup(
     name="aruco-pose-estimation",
-    version="2.0.0",
+    version="0.2.0",
     author="Jonathan Shulgach",
     author_email="jshulgac@andrew.cmu.edu",
     description="A robust toolkit for ArUco marker detection, pose estimation, and custom 3D model tracking",

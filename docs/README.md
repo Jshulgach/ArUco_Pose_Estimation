@@ -95,4 +95,4 @@ See `tools/README.md` for detailed tool documentation.
 ---
 
 **Last Updated:** December 2025  
-**Version:** 2.0.0
+**Version:** 0.2.0

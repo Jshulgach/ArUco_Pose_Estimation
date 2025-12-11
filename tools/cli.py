@@ -21,7 +21,7 @@ from src.utils.io import VideoHandler, PoseRecorder
 
 
 @click.group()
-@click.version_option(version='2.0.0')
+@click.version_option(version='0.2.0')
 def cli():
     """ArUco Pose Estimation Toolkit - Professional ArUco marker tracking and pose estimation"""
     pass
