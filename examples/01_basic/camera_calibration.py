@@ -15,7 +15,10 @@ Usage:
 """
 
 import argparse
-import utils
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from src.utils import legacy_utils as utils
 import numpy as np
 
 if __name__ == "__main__":

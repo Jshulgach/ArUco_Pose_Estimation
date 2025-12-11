@@ -2,8 +2,11 @@ import cv2
 import argparse
 import json
 import numpy as np
-from dodecahedron_model import CleanDodecahedronModel, DodecahedronWithMarkers
-import utils
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from src.models.dodecahedron_model import CleanDodecahedronModel, DodecahedronWithMarkers
+from src.utils import legacy_utils as utils
 from scipy.optimize import least_squares
 
 from gpt_aruco_pose_estimator import ArucoPoseEstimatorFromModel

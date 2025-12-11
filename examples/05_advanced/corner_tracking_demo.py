@@ -1,8 +1,11 @@
 import cv2
-from dodecahedron_model import DodecahedronWithMarkers
 import numpy as np
 import argparse
-import utils
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from src.models.dodecahedron_model import DodecahedronWithMarkers
+from src.utils import legacy_utils as utils
 from scipy.optimize import least_squares
 
 CAMERA_ID = 0  # USB camera ID
